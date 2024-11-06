@@ -1,0 +1,26 @@
+name: Staging Build
+
+on:
+  workflow_dispatch:
+  
+env:
+  GCE_ACCOUNT_NAME: jenkins-spa-gce@sg-banners.iam.gserviceaccount.com
+  GCE_PROJECT: sg-banners
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Trigger-Child-Workflow
+        uses: ./.github/actions/slack-notification
+        with:
+          project: 'Banner Manager'

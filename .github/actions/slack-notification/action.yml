@@ -1,0 +1,24 @@
+name: Slack Notification
+description: 'Send Slack notification'
+inputs:
+  project:
+    description: 'Project'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Send Email
+      shell: bash
+      env:
+        API_KEY: ${{ secrets.EMAIL_API_KEY }}
+        TO_EMAIL: "viktor.ivanov@siteground.com"
+        FROM_EMAIL: "sender@example.com"
+      run: |
+        curl -s --request POST \
+          --url https://api.mailgun.net/v3/siteground.com/messages \
+          --user "api:$API_KEY" \
+          --form from="$FROM_EMAIL" \
+          --form to="$TO_EMAIL" \
+          --form subject="Hello" \
+          --form text="This is a test email from GitHub Actions."
