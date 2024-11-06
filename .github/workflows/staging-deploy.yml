@@ -12,6 +12,8 @@ jobs:
     name: Setup, Build, Publish, and Deploy
     runs-on: ubuntu-latest
 
+    
+
     # Add "id-token" with the intended permissions.
     permissions:
       contents: 'read'
@@ -20,6 +22,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Release version update
+        uses: SiteGround/semantic-release-action@v3.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+          GIT_AUTHOR_NAME: CICD
+          GIT_COMMITTER_NAME: CICD
+          NPM_TOKEN: ${{ secrets.NPM_AUTH_TOKEN_READ_AND_PUBLISH }}
+
+      - name: Get package version
+        run: |
+          echo "VERSION=$(npm run env | grep npm_package_version | cut -d '=' -f 2)" >> $GITHUB_ENV
+
       - name: Trigger-Child-Workflow
         uses: ./.github/actions/slack-notification
         with:
